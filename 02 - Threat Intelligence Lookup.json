@@ -1,0 +1,252 @@
+{
+  "name": "02 - Threat Intelligence Lookup",
+  "nodes": [
+    {
+      "parameters": {},
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [
+        -528,
+        -208
+      ],
+      "id": "d4b6a8d9-d066-4d60-9844-6cde84c98ac8",
+      "name": "When clicking ‘Execute workflow’"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "3bcc5c0a-5d8d-4ed7-bedd-491c0c72ecc1",
+              "name": "IP",
+              "value": "87.250.250.242",
+              "type": "string"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -256,
+        -32
+      ],
+      "id": "381e1fa7-cc57-4fbd-8a3f-95dfc88b7158",
+      "name": "Edit Fields"
+    },
+    {
+      "parameters": {
+        "url": "=http://ip-api.com/json/{{$json.IP}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        16,
+        48
+      ],
+      "id": "f9e59530-0b53-4b33-8787-f510559b8a88",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "89de8642-6cbf-4476-83a7-345a23ee8333",
+              "leftValue": "={{ $json.country }}",
+              "rightValue": "China",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "id": "273d2348-d11b-4662-ab2f-39bef4dadc2a",
+              "leftValue": "={{ $json.country }}",
+              "rightValue": "Russia",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "or"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        256,
+        -32
+      ],
+      "id": "5766dfb4-4400-46f0-b24a-490059f64c59",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "291abd08-e975-4bea-8a8f-b0e5aee34b09",
+              "name": "Risk",
+              "value": "HIGH",
+              "type": "string"
+            },
+            {
+              "id": "9e91a3df-f921-4879-a98c-7f8a472832ac",
+              "name": "Alert",
+              "value": "High Risk Country",
+              "type": "string"
+            },
+            {
+              "id": "7499ec0e-7284-4c17-8ae0-7e6c1124a8d0",
+              "name": "Severity",
+              "value": "Critical",
+              "type": "string"
+            },
+            {
+              "id": "ad8eb345-2f96-45b3-a439-4ca4089b95ed",
+              "name": "Recommendation",
+              "value": "Investigate immediately",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        -128
+      ],
+      "id": "32f6c7d3-c686-4788-86e6-0abef8eb2e86",
+      "name": "Edit Fields1"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "39c47e97-b958-4c7d-810d-094e9685c27b",
+              "name": "Risk",
+              "value": "MEDIUM",
+              "type": "string"
+            },
+            {
+              "id": "acdeea8e-18b5-4673-a54a-53159de3a3d7",
+              "name": "Alert",
+              "value": "Normal Country",
+              "type": "string"
+            },
+            {
+              "id": "53a6d572-35b9-4594-84c9-ec78217a2db6",
+              "name": "Severity",
+              "value": "Low",
+              "type": "string"
+            },
+            {
+              "id": "a3f94638-702e-4a46-b900-bf8758a80702",
+              "name": "Recommendation",
+              "value": "Continue monitoring",
+              "type": "string"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        464,
+        64
+      ],
+      "id": "dbda7d10-42e8-4a2e-aa33-188e3a7ea214",
+      "name": "Edit Fields2"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "When clicking ‘Execute workflow’": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Edit Fields": {
+      "main": [
+        [
+          {
+            "node": "HTTP Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Edit Fields1",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Edit Fields2",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c0651a03-f960-4ef4-a2a8-f93213d1d0a1",
+  "meta": {
+    "instanceId": "0f181c1232d0b35267284933973d1e58e88850e9ed0c5e72ca5273b958cb3478"
+  },
+  "nodeGroups": [],
+  "id": "aKmJHk7WHCCQGaSL",
+  "tags": [
+    {
+      "name": "Threat",
+      "id": "LbsWu9RfNxGG5iFl",
+      "updatedAt": "2026-07-09T08:37:38.179Z",
+      "createdAt": "2026-07-09T08:37:38.179Z"
+    }
+  ]
+}
